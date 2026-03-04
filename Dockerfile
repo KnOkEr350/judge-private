@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-WORKDIR /judge
+WORKDIR /app
 
 COPY test_private.py .
 
