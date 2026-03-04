@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY test_private.py .
 
-RUN pip install pytest fastapi httpx
+RUN pip install pytest fastapi httpx uvicorn pydantic
 
 ENV PYTHONPATH=/student
 
