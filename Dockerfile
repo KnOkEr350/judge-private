@@ -1,11 +1,12 @@
-FROM python:3.12-slim
+FROM python:3.11-slim
 
-WORKDIR /app
+WORKDIR /judge
+
+COPY test_private.py .
 
 RUN pip install pytest fastapi httpx
 
-COPY test_private.py /app/test_private.py
+ENV PYTHONPATH=/student
 
-ENV PYTHONPATH="/student"
+CMD ["pytest", "test_private.py", "-v", "--tb=short"]
 
-CMD ["pytest", "test_private.py", "-v"]
