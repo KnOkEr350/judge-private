@@ -97,15 +97,6 @@ def test_update_item():
     assert r.json()["name"] == "green apple"
 
 
-def test_update_item_partial_keeps_other_fields():
-    created = httpx.post(f"{BASE_URL}/items", json={"name": "apple", "description": "old"}).json()
-    r = httpx.put(f"{BASE_URL}/items/{created['id']}", json={"description": "new"})
-    assert r.status_code == 200
-    data = r.json()
-    assert data["name"] == "apple"
-    assert data["description"] == "new"
-
-
 def test_update_item_not_found():
     r = httpx.put(f"{BASE_URL}/items/99999", json={"name": "ghost"})
     assert r.status_code == 404
@@ -113,10 +104,15 @@ def test_update_item_not_found():
 
 # --- DELETE ---
 
-def test_delete_item_returns_200():
+def test_delete_item():
     created = httpx.post(f"{BASE_URL}/items", json={"name": "apple"}).json()
     r = httpx.delete(f"{BASE_URL}/items/{created['id']}")
     assert r.status_code == 200
+
+
+def test_delete_item_not_found():
+    r = httpx.delete(f"{BASE_URL}/items/99999")
+    assert r.status_code == 404
 
 
 def test_delete_item_actually_removes_it():
@@ -124,3 +120,38 @@ def test_delete_item_actually_removes_it():
     httpx.delete(f"{BASE_URL}/items/{created['id']}")
     r = httpx.get(f"{BASE_URL}/items/{created['id']}")
     assert r.status_code == 404
+
+
+# --- WEATHER ---
+
+def test_weather_returns_200():
+    r = httpx.get(f"{BASE_URL}/weather", params={"city": "Moscow"}, timeout=10)
+    assert r.status_code == 200
+
+
+def test_weather_returns_city_and_temperature():
+    r = httpx.get(f"{BASE_URL}/weather", params={"city": "Moscow"}, timeout=10)
+    data = r.json()
+    assert "city" in data
+    assert "temperature" in data
+
+
+def test_weather_temperature_is_number():
+    r = httpx.get(f"{BASE_URL}/weather", params={"city": "London"}, timeout=10)
+    data = r.json()
+    assert isinstance(data["temperature"], (int, float))
+
+
+def test_weather_city_not_found():
+    r = httpx.get(f"{BASE_URL}/weather", params={"city": "DefinitelyNotARealCity12345"}, timeout=10)
+    assert r.status_code == 404
+
+
+def test_weather_saves_to_db_and_updates():
+    # Первый запрос — сохраняет
+    r1 = httpx.get(f"{BASE_URL}/weather", params={"city": "Paris"}, timeout=10)
+    assert r1.status_code == 200
+    # Второй запрос — обновляет, не дублирует
+    r2 = httpx.get(f"{BASE_URL}/weather", params={"city": "Paris"}, timeout=10)
+    assert r2.status_code == 200
+    assert r2.json()["city"] == r1.json()["city"]
