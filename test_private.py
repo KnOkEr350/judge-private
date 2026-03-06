@@ -33,7 +33,6 @@ def reset_state():
     yield
 
 
-# --- CREATE ---
 
 def test_create_item_returns_201():
     r = httpx.post(f"{BASE_URL}/items", json={"name": "apple", "description": "a fruit"})
@@ -60,8 +59,6 @@ def test_create_multiple_items_have_unique_ids():
     assert r1.json()["id"] != r2.json()["id"]
 
 
-# --- READ ---
-
 def test_get_all_items_empty():
     r = httpx.get(f"{BASE_URL}/items")
     assert r.status_code == 200
@@ -87,8 +84,6 @@ def test_get_item_not_found():
     r = httpx.get(f"{BASE_URL}/items/99999")
     assert r.status_code == 404
 
-
-# --- UPDATE ---
 
 def test_update_item():
     created = httpx.post(f"{BASE_URL}/items", json={"name": "apple"}).json()
@@ -122,7 +117,6 @@ def test_delete_item_actually_removes_it():
     assert r.status_code == 404
 
 
-# --- WEATHER ---
 
 def test_weather_returns_200():
     r = httpx.get(f"{BASE_URL}/weather", params={"city": "Moscow"}, timeout=10)
@@ -148,10 +142,31 @@ def test_weather_city_not_found():
 
 
 def test_weather_saves_to_db_and_updates():
-    # Первый запрос — сохраняет
+    #сохраняет
     r1 = httpx.get(f"{BASE_URL}/weather", params={"city": "Paris"}, timeout=10)
     assert r1.status_code == 200
-    # Второй запрос — обновляет, не дублирует
+    #обновляет
     r2 = httpx.get(f"{BASE_URL}/weather", params={"city": "Paris"}, timeout=10)
     assert r2.status_code == 200
     assert r2.json()["city"] == r1.json()["city"]
+
+
+def test_weather_cache_returns_same_result():
+    r1 = httpx.get(f"{BASE_URL}/weather", params={"city": "Berlin"}, timeout=10)
+    assert r1.status_code == 200
+
+    r2 = httpx.get(f"{BASE_URL}/weather", params={"city": "Berlin"}, timeout=10)
+    assert r2.status_code == 200
+    assert r2.json() == r1.json()
+
+
+def test_weather_cache_is_faster():
+    start1 = time.time()
+    httpx.get(f"{BASE_URL}/weather", params={"city": "Tokyo"}, timeout=10)
+    time1 = time.time() - start1
+
+    start2 = time.time()
+    httpx.get(f"{BASE_URL}/weather", params={"city": "Tokyo"}, timeout=10)
+    time2 = time.time() - start2
+
+    assert time2 < time1
