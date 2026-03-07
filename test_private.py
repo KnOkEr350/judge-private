@@ -60,7 +60,6 @@ def test_create_multiple_items_have_unique_ids():
     assert r1.json()["id"] != r2.json()["id"]
 
 
-# --- READ ---
 
 def test_get_all_items_empty():
     r = httpx.get(f"{BASE_URL}/items")
@@ -87,8 +86,6 @@ def test_get_item_not_found():
     r = httpx.get(f"{BASE_URL}/items/99999")
     assert r.status_code == 404
 
-
-# --- UPDATE ---
 
 def test_update_item():
     created = httpx.post(f"{BASE_URL}/items", json={"name": "apple"}).json()
@@ -121,9 +118,6 @@ def test_delete_item_actually_removes_it():
     r = httpx.get(f"{BASE_URL}/items/{created['id']}")
     assert r.status_code == 404
 
-
-# --- WEATHER ---
-
 def test_weather_returns_200():
     r = httpx.get(f"{BASE_URL}/weather", params={"city": "Moscow"}, timeout=30)
     assert r.status_code == 200
@@ -153,9 +147,6 @@ def test_weather_saves_to_db_and_updates():
     r2 = httpx.get(f"{BASE_URL}/weather", params={"city": "Paris"}, timeout=30)
     assert r2.status_code == 200
     assert r2.json()["city"] == r1.json()["city"]
-
-
-# --- WEATHER CACHE ---
 
 def test_weather_cache_returns_same_result():
     r1 = httpx.get(f"{BASE_URL}/weather", params={"city": "Berlin"}, timeout=30)
