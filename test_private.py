@@ -33,8 +33,6 @@ def reset_state():
     yield
 
 
-# --- CREATE ---
-
 def test_create_item_returns_201():
     r = httpx.post(f"{BASE_URL}/items", json={"name": "apple", "description": "a fruit"})
     assert r.status_code == 201
