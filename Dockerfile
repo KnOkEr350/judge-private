@@ -2,8 +2,11 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir pytest==8.* httpx==0.27.*
 
-COPY test_private.py .
+RUN pip install --no-cache-dir pytest-asyncio==1.* httpx==0.27.*
 
-CMD ["pytest", "test_private.py", "-v", "--tb=short"]
+COPY tests/ ./tests/
+COPY tests/runner.py .
+
+
+ENTRYPOINT ["python", "runner.py"]

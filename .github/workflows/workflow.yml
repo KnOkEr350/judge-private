@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'Dockerfile'
-      - 'test_private.py'
+      - '../../tests/test_private.py'
 
 jobs:
   build:
