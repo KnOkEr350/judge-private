@@ -2,8 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-
-RUN pip install --no-cache-dir pytest-asyncio==1.* httpx==0.27.*
+COPY tests/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY tests/ ./tests/
 COPY tests/runner.py .

@@ -1,34 +1,68 @@
 import pytest
 import os
 import sys
+import json
+
+
+def calculate_points(report_path, assignment_type):
+    weights = {
+        "basic": {
+            "test_ping": 3,
+            "test_crud_flow": 7
+        },
+        "advanced": {
+            "test_ping": 2,
+            "test_external_weather_integration": 8,
+            "test_history_in_db": 10
+        }
+    }
+
+    if not os.path.exists(report_path):
+        return 0
+
+    with open(report_path, 'r') as f:
+        data = json.load(f)
+
+    score = 0
+    current_weights = weights.get(assignment_type, {})
+
+    for test in data.get('tests', []):
+        # Вытаскиваем только имя функции теста
+        test_name = test['nodeid'].split('::')[-1]
+        if test['outcome'] == 'passed':
+            score += current_weights.get(test_name, 0)
+
+    return score
+
 
 def main():
     assignment = os.getenv("ASSIGNMENT_TYPE", "basic").lower()
-    base_url = os.getenv("BASE_URL", "http://student-app:8080")
+    report_file = "report.json"
+    output_path = "/app/reports/results.json"  # Путь внутри контейнера
 
     print(f"Начинаем проверку задания: {assignment.upper()}")
-    print(f"Целевой URL: {base_url}")
 
-    if assignment == "basic":
-        test_path = "tests/basic_tests.py"
-        max_score = 10
-    elif assignment == "advanced":
-        test_path = "tests/advanced_tests.py"
-        max_score = 20
-    else:
-        print(f"Ошибка: Неизвестный тип задания '{assignment}'")
-        sys.exit(1)
+    test_path = f"tests/{assignment}_tests.py"
 
-    retcode = pytest.main([test_path, "-q", "--tb=short"])
+    # pytest с генерацией JSON-отчета
+    pytest.main([
+        test_path,
+        "-q",
+        f"--json-report",
+        f"--json-report-file={report_file}"
+    ])
 
-    if retcode == 0:
-        print("Все тесты пройдены!")
-        print(f"POINTS: {max_score}")
-        sys.exit(0)
-    else:
-        print("Тесты завалены. Попробуй еще раз.")
-        print("POINTS: 0")
-        sys.exit(retcode)
+    total_points = calculate_points(report_file, assignment)
+
+    # Сохраняем результат для GitHub Classroom
+    with open(output_path, 'w') as f:
+        json.dump({"score": total_points}, f)
+
+    print(f"---")
+    print(f"Проверка завершена. Набрано баллов: {total_points}")
+
+    sys.exit(0)
+
 
 if __name__ == "__main__":
     main()
