@@ -6,15 +6,8 @@ import json
 
 def calculate_points(report_path, assignment_type):
     weights = {
-        "basic": {
-            "test_ping": 3,
-            "test_crud_flow": 7
-        },
-        "advanced": {
-            "test_ping": 2,
-            "test_external_weather_integration": 8,
-            "test_history_in_db": 10
-        }
+        "basic": {"test_ping": 3, "test_crud_flow": 7},
+        "advanced": {"test_ping": 2, "test_external_weather_integration": 8, "test_history_in_db": 10}
     }
 
     if not os.path.exists(report_path):
@@ -27,24 +20,22 @@ def calculate_points(report_path, assignment_type):
     current_weights = weights.get(assignment_type, {})
 
     for test in data.get('tests', []):
-        # Вытаскиваем только имя функции теста
         test_name = test['nodeid'].split('::')[-1]
         if test['outcome'] == 'passed':
             score += current_weights.get(test_name, 0)
-
     return score
 
 
 def main():
     assignment = os.getenv("ASSIGNMENT_TYPE", "basic").lower()
     report_file = "report.json"
-    output_path = "results.json"
+
+    # Путь внутри контейнера, который связан с корнем репозитория через volumes
+    output_path = "/app/reports/results.json"
 
     print(f"Начинаем проверку задания: {assignment.upper()}")
-
     test_path = f"tests/{assignment}_tests.py"
 
-    # pytest с генерацией JSON-отчета
     pytest.main([
         test_path,
         "-q",
@@ -54,13 +45,11 @@ def main():
 
     total_points = calculate_points(report_file, assignment)
 
-    # Сохраняем результат для GitHub Classroom
     with open(output_path, 'w') as f:
         json.dump({"score": total_points}, f)
 
     print(f"---")
     print(f"Проверка завершена. Набрано баллов: {total_points}")
-
     sys.exit(0)
 
 
