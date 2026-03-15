@@ -32,7 +32,6 @@ def main():
 
     output_path = "/app/reports/results.json"
 
-    print(f"Начинаем проверку задания: {assignment.upper()}")
     test_path = f"tests/{assignment}_tests.py"
 
     pytest.main([
@@ -47,8 +46,7 @@ def main():
     with open(output_path, 'w') as f:
         json.dump({"score": total_points}, f)
 
-    print(f"---")
-    print(f"Проверка завершена. Набрано баллов: {total_points}")
+
     sys.exit(0)
 
 
