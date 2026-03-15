@@ -30,7 +30,6 @@ def main():
     assignment = os.getenv("ASSIGNMENT_TYPE", "basic").lower()
     report_file = "report.json"
 
-    # Путь внутри контейнера, который связан с корнем репозитория через volumes
     output_path = "/app/reports/results.json"
 
     print(f"Начинаем проверку задания: {assignment.upper()}")
