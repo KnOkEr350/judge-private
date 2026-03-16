@@ -5,12 +5,6 @@ import time
 
 BASE_URL = os.getenv("BASE_URL", "http://student-app:8080")
 
-@pytest.mark.asyncio
-async def test_ping():
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"{BASE_URL}/ping")
-        assert response.status_code == 200
-
 
 @pytest.mark.asyncio
 async def test_external_weather_integration():

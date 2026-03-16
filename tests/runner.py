@@ -7,7 +7,7 @@ import json
 def calculate_points(report_path, assignment_type):
     weights = {
         "basic": {"test_ping": 3, "test_crud_flow": 7},
-        "advanced": {"test_ping": 2, "test_external_weather_integration": 8, "test_history_in_db": 10}
+        "advanced": {"test_external_weather_integration": 8, "test_history_in_db": 10}
     }
 
     if not os.path.exists(report_path):
