@@ -30,7 +30,7 @@ def main():
     assignment = os.getenv("ASSIGNMENT_TYPE", "basic").lower()
     report_file = "report.json"
 
-    output_path = "/app/reports/results.json"
+    output_path = "/app/results.json"
 
     test_path = f"tests/{assignment}_tests.py"
 
