@@ -19,6 +19,8 @@ def calculate_points(report_path, assignment_type):
     score = 0
     current_weights = weights.get(assignment_type, {})
 
+    all_found = [t['nodeid'] for t in data.get('tests', [])]
+    print(f"DEBUG: Pytest нашел следующие тесты: {all_found}")
     for test in data.get('tests', []):
         test_name = test['nodeid'].split('::')[-1]
         if test['outcome'] == 'passed':
