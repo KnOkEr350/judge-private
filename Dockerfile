@@ -2,6 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+RUN mkdir -p /tests/app
 
 COPY tests/requirements.txt .
 
