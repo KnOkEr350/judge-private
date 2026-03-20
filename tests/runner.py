@@ -41,7 +41,7 @@ def calculate_points(report_path, assignment_type):
 def main():
     assignment = os.getenv("ASSIGNMENT_TYPE", "basic").lower()
     report_file = "report.json"
-    output_path = "/app/results.json"  # Путь должен быть абсолютным
+    output_path = "/app/reports/results.json"
 
     total_points = 0  # Значение по умолчанию
 
