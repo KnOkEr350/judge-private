@@ -38,7 +38,7 @@ def calculate_points(report_path, assignment_type):
 
 def main():
     assignment = os.getenv("ASSIGNMENT_TYPE", "basic").lower()
-    report_file = "report.json"
+    report_file = "/app/report.json"
     output_path = "/app/results.json"
 
     workspace = os.getenv("GITHUB_WORKSPACE", "/tmp")
