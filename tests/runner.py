@@ -57,6 +57,14 @@ def main():
         total_points = calculate_points(report_file, assignment)
         print(f"Набрано баллов: {total_points}")
 
+        result_data = {
+            "score": total_points,
+            "assignment": assignment
+        }
+
+        with open(output_path, 'w') as f:
+            json.dump(result_data, f)
+
     except Exception as e:
         print(f"CRITICAL ERROR: {e}")
 
