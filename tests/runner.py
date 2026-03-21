@@ -41,7 +41,7 @@ def main():
     report_file = "report.json"
     output_path = "/app/results.json"
 
-    total_points = 0  # Значение по умолчанию
+    total_points = 0
 
     try:
         test_path = f"tests/{assignment}_tests.py"
