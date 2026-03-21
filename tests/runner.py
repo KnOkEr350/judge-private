@@ -41,6 +41,9 @@ def main():
     report_file = "report.json"
     output_path = "/app/results.json"
 
+    workspace = os.getenv("GITHUB_WORKSPACE", "/tmp")
+    report_file = os.path.join(workspace, "report.json")
+
     total_points = 0
 
     try:
