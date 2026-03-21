@@ -45,7 +45,6 @@ def main():
 
     try:
         test_path = f"tests/{assignment}_tests.py"
-        print(f"DEBUG: Запуск тестов из {test_path}")
 
 
         pytest.main([
@@ -56,7 +55,7 @@ def main():
         ])
 
         total_points = calculate_points(report_file, assignment)
-        print(f"DEBUG: Итого набрано баллов: {total_points}")
+        print(f"Набрано баллов: {total_points}")
 
     except Exception as e:
         print(f"CRITICAL ERROR: {e}")
