@@ -26,6 +26,7 @@ def calculate_points(report_path, assignment_type):
     current_weights = weights.get(assignment_type, {})
 
 
+    tests = data.get('tests', [])
     for test in tests:
         nodeid = test.get('nodeid', '')
         test_name = nodeid.split('::')[-1]
@@ -38,7 +39,7 @@ def calculate_points(report_path, assignment_type):
 def main():
     assignment = os.getenv("ASSIGNMENT_TYPE", "basic").lower()
     report_file = "report.json"
-    output_path = "/app/results.json"  # Путь должен быть абсолютным
+    output_path = "/app/results.json"
 
     total_points = 0  # Значение по умолчанию
 
@@ -46,7 +47,7 @@ def main():
         test_path = f"tests/{assignment}_tests.py"
         print(f"DEBUG: Запуск тестов из {test_path}")
 
-        # Запускаем pytest
+
         pytest.main([
             test_path,
             "-q",
@@ -59,6 +60,7 @@ def main():
 
     except Exception as e:
         print(f"CRITICAL ERROR: {e}")
+
 
 
     time.sleep(1)
