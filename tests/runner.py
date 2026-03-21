@@ -25,9 +25,6 @@ def calculate_points(report_path, assignment_type):
     score = 0
     current_weights = weights.get(assignment_type, {})
 
-    # Безопасное получение списка тестов
-    tests = data.get('tests', [])
-    print(f"DEBUG: Pytest нашел следующие тесты: {[t.get('nodeid') for t in tests]}")
 
     for test in tests:
         nodeid = test.get('nodeid', '')
@@ -62,23 +59,8 @@ def main():
 
     except Exception as e:
         print(f"CRITICAL ERROR: {e}")
-    finally:
-        # ЗАПИСЫВАЕМ РЕЗУЛЬТАТ В ЛЮБОМ СЛУЧАЕ
-        print(f"DEBUG: Попытка записи результата в {output_path}...")
-        try:
-            with open(output_path, 'w') as f:
-                json.dump({"score": total_points}, f)
-                f.flush()
-                os.fsync(f.fileno())  # Принудительно пишем на диск
 
-            if os.path.exists(output_path):
-                print(f"SUCCESS: Файл {output_path} успешно создан.")
-            else:
-                print(f"ERROR: Файл {output_path} почему-то не создался!")
-        except Exception as e:
-            print(f"DEBUG: Не удалось записать results.json: {e}")
 
-    # Небольшая пауза, чтобы Docker успел зафиксировать изменения
     time.sleep(1)
     sys.exit(0)
 
