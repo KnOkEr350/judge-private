@@ -12,6 +12,5 @@ COPY tests/runner.py .
 
 RUN mv ./tests/runner.py .
 
-
 RUN chmod -R 777 /app
 ENTRYPOINT ["python", "runner.py"]
