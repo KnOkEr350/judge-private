@@ -12,14 +12,12 @@ def calculate_points(report_path, assignment_type):
     }
 
     if not os.path.exists(report_path):
-        print(f"DEBUG: Файл отчета {report_path} не найден!")
         return 0
 
     try:
         with open(report_path, 'r') as f:
             data = json.load(f)
     except Exception as e:
-        print(f"DEBUG: Ошибка чтения JSON: {e}")
         return 0
 
     score = 0
