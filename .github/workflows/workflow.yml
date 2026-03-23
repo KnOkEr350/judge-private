@@ -30,7 +30,7 @@ jobs:
           context: .
           push: true
           tags: |
-            knoker123/my-judge:v1
+            knoker123/my-judge:v2
             knoker123/my-judge:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
