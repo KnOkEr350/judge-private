@@ -1,14 +1,16 @@
-import pytest
-import httpx
 import os
 import time
+
+import httpx
+import pytest
 
 BASE_URL = os.getenv("BASE_URL", "http://student-app:8080")
 
 
 @pytest.mark.asyncio
 async def test_ping():
-    async with httpx.AsyncClient() as client:
+    timeout = httpx.Timeout(15.0)
+    async with httpx.AsyncClient(timeout=timeout) as client:
         response = await client.get(f"{BASE_URL}/ping")
         assert response.status_code == 200
 
@@ -16,8 +18,9 @@ async def test_ping():
 @pytest.mark.asyncio
 async def test_external_weather_integration():
     params = {"lat": 55.75, "lon": 37.61}
+    timeout = httpx.Timeout(15.0)
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=timeout) as client:
         start_time = time.time()
         res1 = await client.get(f"{BASE_URL}/weather/external", params=params)
         duration1 = time.time() - start_time
@@ -36,7 +39,8 @@ async def test_external_weather_integration():
 
 @pytest.mark.asyncio
 async def test_history_in_db():
-    async with httpx.AsyncClient() as client:
+    timeout = httpx.Timeout(15.0)
+    async with httpx.AsyncClient(timeout=timeout) as client:
         response = await client.get(f"{BASE_URL}/weather/history")
         assert response.status_code == 200
         history = response.json()
